@@ -1357,6 +1357,46 @@
       font-size: 0.85rem;
     }
 
+    /* Platform tabs */
+    .platform-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 32px;
+      justify-content: center;
+    }
+
+    .platform-tab {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 10px 24px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .platform-tab:first-child { border-radius: 6px 0 0 6px; }
+    .platform-tab:last-child { border-radius: 0 6px 6px 0; }
+    .platform-tab:not(:first-child) { border-left: none; }
+
+    .platform-tab.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .platform-tab.active + .platform-tab {
+      border-left: 1px solid var(--accent);
+    }
+
+    .platform-tab:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .platform-guide { display: none; }
+    .platform-guide.active { display: block; }
+
     /* ========== Security ========== */
     .security-grid {
       display: grid;
@@ -1509,9 +1549,9 @@
         reports back to one chat. Stop babysitting. Start AI managing.
       </p>
       <div class="hero-install">
-        <div class="code-block" style="display: inline-block; min-width: 340px;">
-          <button class="copy-btn" data-copy="pip install onecmd">copy</button>
-          <span class="prompt">$</span> pip install onecmd
+        <div class="code-block" style="display: inline-block; min-width: 500px;">
+          <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
+          <span class="prompt">$</span> curl -fsSL https://1cmd.ai/setup.sh | bash
         </div>
       </div>
     </div>
@@ -1963,59 +2003,116 @@
     <div class="container">
       <h2 class="section-title">Quick start</h2>
       <p class="section-subtitle">Up and running in under 2 minutes</p>
-      <div class="quickstart-steps">
 
-        <div class="step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h4>Create a Telegram bot</h4>
-            <p>Message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> on Telegram and create a new bot. Copy the API token.</p>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h4>Install OneCmd</h4>
-            <div class="code-block">
-              <button class="copy-btn" data-copy='pip install onecmd          # Linux&#10;pip install "onecmd[macos]" # macOS'>copy</button>
-              <span class="prompt">$</span> pip install onecmd          <span class="comment"># Linux</span><br>
-              <span class="prompt">$</span> pip install <span class="flag">"onecmd[macos]"</span> <span class="comment"># macOS</span>
-            </div>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
-              Or use the one-line installer:
-            </p>
-            <div class="code-block" style="margin-top: 8px;">
-              <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
-              <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h4>Start the bot</h4>
-            <div class="code-block">
-              <button class="copy-btn" data-copy="onecmd --apikey YOUR_BOT_TOKEN">copy</button>
-              <span class="prompt">$</span> onecmd <span class="flag">--apikey</span> YOUR_BOT_TOKEN
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h4>Enable the AI manager (optional)</h4>
-            <p>Add a Gemini or Claude API key for AI-powered automation.</p>
-            <div class="code-block">
-              <button class="copy-btn" data-copy="GOOGLE_API_KEY=your_key onecmd --apikey YOUR_BOT_TOKEN">copy</button>
-              <span class="prompt">$</span> GOOGLE_API_KEY=your_key onecmd <span class="flag">--apikey</span> YOUR_BOT_TOKEN
-            </div>
-          </div>
-        </div>
-
+      <!-- Platform tabs -->
+      <div class="platform-tabs">
+        <button class="platform-tab active" data-platform="telegram">Telegram</button>
+        <button class="platform-tab" data-platform="slack">Slack</button>
+        <button class="platform-tab" data-platform="docker">Docker</button>
       </div>
+
+      <!-- Telegram guide -->
+      <div class="platform-guide active" id="guide-telegram">
+        <div class="quickstart-steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Create a Telegram bot</h4>
+              <p>Message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> on Telegram, send <code>/newbot</code>, and copy the API token.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Install &amp; configure</h4>
+              <p>One command. Handles Python, dependencies, and walks you through setup.</p>
+              <div class="code-block">
+                <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
+                <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Done</h4>
+              <p>Open Telegram and message your bot. The first user to connect becomes the owner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slack guide -->
+      <div class="platform-guide" id="guide-slack">
+        <div class="quickstart-steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Create a Slack app</h4>
+              <p>Go to <a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a>, create a new app, and enable Socket Mode. Add bot scopes: <code>chat:write</code>, <code>channels:history</code>, <code>groups:history</code>, <code>im:history</code>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Install OneCmd</h4>
+              <div class="code-block">
+                <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
+                <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Start with Slack tokens</h4>
+              <p>Provide both your Telegram token (required) and Slack tokens. OneCmd runs both connectors simultaneously.</p>
+              <div class="code-block">
+                <button class="copy-btn" data-copy="SLACK_BOT_TOKEN=xoxb-... SLACK_APP_TOKEN=xapp-... ./run.sh">copy</button>
+                <span class="prompt">$</span> SLACK_BOT_TOKEN=xoxb-... SLACK_APP_TOKEN=xapp-... ./run.sh
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Docker guide -->
+      <div class="platform-guide" id="guide-docker">
+        <div class="quickstart-steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Create a Telegram bot</h4>
+              <p>Message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> on Telegram, send <code>/newbot</code>, and copy the API token.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Run with Docker</h4>
+              <div class="code-block">
+                <button class="copy-btn" data-copy="docker run -d --name onecmd \&#10;  -e TELEGRAM_BOT_TOKEN=your_token \&#10;  ghcr.io/warlockee/onecmd:latest">copy</button>
+                <span class="prompt">$</span> docker run -d --name onecmd \<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;-e TELEGRAM_BOT_TOKEN=your_token \<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ghcr.io/warlockee/onecmd:latest
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Or use Docker Compose</h4>
+              <div class="code-block">
+                <button class="copy-btn" data-copy="curl -O https://raw.githubusercontent.com/warlockee/1cmd-ai/main/docker-compose.yml&#10;# Edit docker-compose.yml with your token&#10;docker compose up -d">copy</button>
+                <span class="prompt">$</span> curl -O https://raw.githubusercontent.com/warlockee/1cmd-ai/main/docker-compose.yml<br>
+                <span class="prompt">$</span> <span class="comment"># Edit docker-compose.yml with your token</span><br>
+                <span class="prompt">$</span> docker compose up -d
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -2066,6 +2163,16 @@
     document.querySelectorAll('.nav-links a').forEach(function(link) {
       link.addEventListener('click', function() {
         document.querySelector('.nav-links').classList.remove('open');
+      });
+    });
+
+    // ========== Platform tabs ==========
+    document.querySelectorAll('.platform-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.platform-guide').forEach(function(g) { g.classList.remove('active'); });
+        tab.classList.add('active');
+        document.getElementById('guide-' + tab.dataset.platform).classList.add('active');
       });
     });
 
