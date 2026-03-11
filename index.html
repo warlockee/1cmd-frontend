@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneCmd -- AI-Powered Terminal Manager</title>
+  <meta name="description" content="Control and automate your machines from Telegram. AI-powered terminal manager for macOS and Linux. Self-hosted, open-source, MIT licensed.">
+  <meta name="keywords" content="terminal manager, AI, Telegram, remote access, self-hosted, homelab, devops, automation">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="OneCmd -- AI-Powered Terminal Manager">
+  <meta property="og:description" content="Control and automate your machines from Telegram. One bot per machine.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://1cmd.ai">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OneCmd -- AI-Powered Terminal Manager">
+  <meta name="twitter:description" content="Control and automate your machines from Telegram. One bot per machine.">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F916;</text></svg>">
+
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: #1a2233;
+      --bg-code: #0d1117;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --accent-dim: #0c4a6e;
+      --green: #4ade80;
+      --green-dim: #166534;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --border: #1e293b;
+      --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* ========== Layout ========== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 80px 0;
+    }
+
+    /* ========== Navigation ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .nav-logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card);
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-primary) !important;
+      transition: border-color 0.2s;
+    }
+
+    .nav-github:hover {
+      border-color: var(--accent);
+    }
+
+    .nav-github svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--text-primary);
+    }
+
+    /* Mobile nav toggle */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ========== Hero ========== */
+    .hero {
+      padding-top: 140px;
+      padding-bottom: 80px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--green);
+      background: var(--green-dim);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .hero h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .accent {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-install {
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    /* ========== Code Blocks ========== */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--green);
+      text-align: left;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .code-block .prompt {
+      color: var(--accent);
+      user-select: none;
+    }
+
+    .code-block .comment {
+      color: var(--text-muted);
+    }
+
+    .code-block .flag {
+      color: var(--yellow);
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    /* ========== Demo Section ========== */
+    .demo {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-window {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .demo-titlebar {
+      background: var(--bg-card);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .demo-dot.red { background: #ff5f56; }
+    .demo-dot.yellow { background: #ffbd2e; }
+    .demo-dot.green { background: #27c93f; }
+
+    .demo-titlebar span {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .demo-content {
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      min-height: 320px;
+    }
+
+    .demo-content .line {
+      opacity: 0;
+      animation: fadeInLine 0.3s forwards;
+    }
+
+    .demo-content .user-msg {
+      color: var(--accent);
+    }
+
+    .demo-content .bot-msg {
+      color: var(--green);
+    }
+
+    .demo-content .system-msg {
+      color: var(--text-muted);
+    }
+
+    .demo-content .cmd {
+      color: var(--yellow);
+    }
+
+    @keyframes fadeInLine {
+      to { opacity: 1; }
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      font-size: 1.05rem;
+    }
+
+    /* ========== Features ========== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent-dim);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* ========== How It Works ========== */
+    .how-it-works {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .platform-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+    }
+
+    .platform-card h3 {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .platform-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .platform-card li {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .platform-card li::before {
+      content: '>';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+
+    .terminals-list {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* ========== Quick Start ========== */
+    .quickstart-steps {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content h4 {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .step-content p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .step-content .code-block {
+      font-size: 0.85rem;
+    }
+
+    /* ========== Security ========== */
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .security-item {
+      text-align: center;
+      padding: 24px;
+    }
+
+    .security-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .security-item h4 {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .security-item p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    /* ========== Footer ========== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+    }
+
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    /* ========== Mobile ========== */
+    @media (max-width: 768px) {
+      section {
+        padding: 60px 0;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        padding: 20px 24px;
+        gap: 16px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .platform-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 120px;
+        padding-bottom: 60px;
+      }
+    }
+
+    /* ========== Animations ========== */
+    @media (prefers-reduced-motion: no-preference) {
+      .feature-card,
+      .platform-card,
+      .step {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s, transform 0.5s;
+      }
+
+      .feature-card.visible,
+      .platform-card.visible,
+      .step.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .feature-card,
+      .platform-card,
+      .step {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo"><span>&gt;</span> onecmd</a>
+      <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#security">Security</a>
+        <a href="https://github.com/warlockee/1cmd-ai" class="nav-github" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-badge">v0.3 -- open source</span>
+      <h1>
+        <span class="accent">AI-powered</span> terminal manager.<br>
+        Controlled from Telegram.
+      </h1>
+      <p>
+        One bot per machine. See terminal output, send commands, and let an AI agent
+        monitor, diagnose, and automate -- all from your phone.
+      </p>
+      <div class="hero-install">
+        <div class="code-block" style="display: inline-block; min-width: 340px;">
+          <button class="copy-btn" data-copy="pip install onecmd">copy</button>
+          <span class="prompt">$</span> pip install onecmd
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="demo" id="demo">
+    <div class="container">
+      <h2 class="section-title">See it in action</h2>
+      <p class="section-subtitle">AI manager mode -- talk naturally, it handles the rest</p>
+      <div class="demo-window">
+        <div class="demo-titlebar">
+          <div class="demo-dot red"></div>
+          <div class="demo-dot yellow"></div>
+          <div class="demo-dot green"></div>
+          <span>Telegram -- OneCmd Bot</span>
+        </div>
+        <div class="demo-content" id="demo-terminal">
+          <!-- Lines injected by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title">Features</h2>
+      <p class="section-subtitle">Everything you need to manage machines from your phone</p>
+      <div class="features-grid">
+
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">&#x1F9E0;</span>
+          <h3>AI Manager</h3>
+          <p>An LLM agent that sees all your terminals. Ask it to check disk space, investigate slow services, restart processes, and automate recurring tasks -- in plain English.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">&#x1F4F1;</span>
+          <h3>Remote Terminal</h3>
+          <p>See terminal output and send keystrokes from Telegram. Modifier keys (Ctrl, Alt, Esc) via emoji prefixes. Live refresh with a single tap.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">&#x1F5A5;&#xFE0F;</span>
+          <h3>Multi-Platform</h3>
+          <p>macOS via Accessibility API (Terminal.app, iTerm2, Ghostty, kitty, Alacritty, Warp, and more). Linux via tmux. No screen recording permission needed.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">&#x1F50D;</span>
+          <h3>Smart Diagnostics</h3>
+          <p>The AI detects stuck terminals, queues commands to avoid conflicts, follows up on async operations, and auto-summarizes long conversations to stay within context limits.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">&#x1F504;</span>
+          <h3>Background Tasks</h3>
+          <p>"Watch this terminal until the build finishes." The AI runs recurring checks and notifies you when conditions are met. Set it and forget it.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">&#x1F512;</span>
+          <h3>Self-Hosted &amp; Secure</h3>
+          <p>Runs entirely on your machine. Owner-locked to the first Telegram user. Optional TOTP authentication. No cloud backend, no tracking, no subscriptions.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-subtitle">Native integration on each platform -- no hacks, no workarounds</p>
+      <div class="platform-grid">
+
+        <div class="platform-card">
+          <h3>&#x1F34E; macOS</h3>
+          <ul>
+            <li>Reads terminal text via the <strong>Accessibility API</strong> (AXUIElement)</li>
+            <li>Injects keystrokes via <strong>CGEvent</strong></li>
+            <li>Focuses windows using <strong>AXUIElement</strong></li>
+            <li>No Screen Recording permission needed</li>
+          </ul>
+          <p class="terminals-list">
+            Supported: Terminal.app, iTerm2, Ghostty, kitty, Alacritty, Hyper, Warp, WezTerm, Tabby
+          </p>
+        </div>
+
+        <div class="platform-card">
+          <h3>&#x1F427; Linux</h3>
+          <ul>
+            <li>Discovers sessions with <strong>tmux list-panes</strong></li>
+            <li>Reads content with <strong>tmux capture-pane</strong></li>
+            <li>Sends keystrokes with <strong>tmux send-keys</strong></li>
+            <li>Works with any terminal running inside tmux</li>
+          </ul>
+          <p class="terminals-list">
+            Requirement: tmux installed and sessions running
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section id="quickstart">
+    <div class="container">
+      <h2 class="section-title">Quick start</h2>
+      <p class="section-subtitle">Up and running in under 2 minutes</p>
+      <div class="quickstart-steps">
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Create a Telegram bot</h4>
+            <p>Message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> on Telegram and create a new bot. Copy the API token.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Install OneCmd</h4>
+            <div class="code-block">
+              <button class="copy-btn" data-copy='pip install onecmd          # Linux&#10;pip install "onecmd[macos]" # macOS'>copy</button>
+              <span class="prompt">$</span> pip install onecmd          <span class="comment"># Linux</span><br>
+              <span class="prompt">$</span> pip install <span class="flag">"onecmd[macos]"</span> <span class="comment"># macOS</span>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              Or use the one-line installer:
+            </p>
+            <div class="code-block" style="margin-top: 8px;">
+              <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
+              <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Start the bot</h4>
+            <div class="code-block">
+              <button class="copy-btn" data-copy="onecmd --apikey YOUR_BOT_TOKEN">copy</button>
+              <span class="prompt">$</span> onecmd <span class="flag">--apikey</span> YOUR_BOT_TOKEN
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Enable the AI manager (optional)</h4>
+            <p>Add a Gemini or Claude API key for AI-powered automation.</p>
+            <div class="code-block">
+              <button class="copy-btn" data-copy="GOOGLE_API_KEY=your_key onecmd --apikey YOUR_BOT_TOKEN">copy</button>
+              <span class="prompt">$</span> GOOGLE_API_KEY=your_key onecmd <span class="flag">--apikey</span> YOUR_BOT_TOKEN
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section id="security" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <h2 class="section-title">Security</h2>
+      <p class="section-subtitle">Designed for self-hosters who care about control</p>
+      <div class="security-grid">
+        <div class="security-item">
+          <span class="security-icon" aria-hidden="true">&#x1F513;</span>
+          <h4>Owner Lock</h4>
+          <p>First user to message the bot becomes the owner. Everyone else is ignored.</p>
+        </div>
+        <div class="security-item">
+          <span class="security-icon" aria-hidden="true">&#x1F511;</span>
+          <h4>TOTP / 2FA</h4>
+          <p>Optional Google Authenticator support. Enable with --enable-otp on first run.</p>
+        </div>
+        <div class="security-item">
+          <span class="security-icon" aria-hidden="true">&#x1F3E0;</span>
+          <h4>Self-Hosted</h4>
+          <p>Runs on your machine. No cloud backend. Only Telegram bot API messages leave the network.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/warlockee/1cmd-ai" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/warlockee/1cmd-ai/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://github.com/warlockee/1cmd-ai/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      </div>
+      <p>Made by Erik. Open source, always.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ========== Mobile nav toggle ==========
+    document.querySelector('.nav-toggle').addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.toggle('open');
+    });
+
+    // Close mobile nav when a link is clicked
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        document.querySelector('.nav-links').classList.remove('open');
+      });
+    });
+
+    // ========== Copy buttons ==========
+    document.querySelectorAll('.copy-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var text = this.getAttribute('data-copy');
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          btn.classList.add('copied');
+          setTimeout(function() {
+            btn.textContent = 'copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+    });
+
+    // ========== Scroll animations ==========
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.feature-card, .platform-card, .step').forEach(function(el) {
+        observer.observe(el);
+      });
+    }
+
+    // ========== Demo animation ==========
+    var demoLines = [
+      { type: 'system', text: 'Manager mode activated. How can I help?' },
+      { type: 'user', text: 'You: check disk space on all terminals' },
+      { type: 'system', text: '...' },
+      { type: 'bot', text: 'AI: Running df -h on 3 terminals...' },
+      { type: 'bot', text: '' },
+      { type: 'bot', text: 'AI: Results:' },
+      { type: 'cmd', text: '  server-1  /dev/sda1  45% used  (230GB free)' },
+      { type: 'cmd', text: '  server-2  /dev/sda1  91% used  (18GB free)  &#x26A0;' },
+      { type: 'cmd', text: '  pi-node   /dev/mmcblk0  62% used  (11GB free)' },
+      { type: 'bot', text: '' },
+      { type: 'bot', text: 'AI: server-2 is at 91% disk usage. Want me to investigate what\'s using space?' },
+      { type: 'user', text: 'You: yes, clean up docker images if safe' },
+      { type: 'system', text: '...' },
+      { type: 'bot', text: 'AI: Found 12.4GB of unused Docker images on server-2.' },
+      { type: 'bot', text: 'AI: Running docker image prune -f...' },
+      { type: 'bot', text: 'AI: Done. Freed 12.4GB. Disk now at 67%.' },
+    ];
+
+    var demoEl = document.getElementById('demo-terminal');
+    var demoStarted = false;
+
+    function runDemo() {
+      if (demoStarted) return;
+      demoStarted = true;
+      demoEl.innerHTML = '';
+      var delay = 0;
+
+      demoLines.forEach(function(line, i) {
+        delay += (line.text === '...') ? 800 : 300;
+        setTimeout(function() {
+          var div = document.createElement('div');
+          div.className = 'line ' + line.type + '-msg';
+          if (line.text === '') {
+            div.innerHTML = '&nbsp;';
+          } else {
+            div.textContent = line.text;
+          }
+          div.style.animationDelay = '0s';
+          demoEl.appendChild(div);
+          demoEl.scrollTop = demoEl.scrollHeight;
+        }, delay);
+      });
+
+      // Loop the demo
+      setTimeout(function() {
+        demoStarted = false;
+        runDemo();
+      }, delay + 4000);
+    }
+
+    // Start demo when visible
+    var demoObserver = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        runDemo();
+      }
+    }, { threshold: 0.3 });
+
+    demoObserver.observe(document.querySelector('.demo-window'));
+  </script>
+
+</body>
+</html>
