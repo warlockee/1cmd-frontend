@@ -263,72 +263,938 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .demo-window {
+    .demo-split {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 0;
+      max-width: 1000px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-code);
+      height: 520px;
+    }
+
+    /* --- Messenger (left) --- */
+    .messenger {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+      min-height: 0;
+    }
+
+    .messenger-header {
+      background: var(--bg-card);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .messenger-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #818cf8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .messenger-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .messenger-name {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .messenger-status {
+      font-size: 0.7rem;
+      color: var(--green);
+    }
+
+    .messenger-body {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .msg {
+      max-width: 88%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: msgIn 0.3s forwards;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+      background: #1d4ed8;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-bot {
+      align-self: flex-start;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-bot .msg-label {
+      font-size: 0.65rem;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .msg-typing {
+      align-self: flex-start;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border-bottom-left-radius: 4px;
+      font-style: italic;
+    }
+
+    .msg pre {
       background: var(--bg-code);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      max-width: 700px;
+      border-radius: 4px;
+      padding: 6px 8px;
+      margin-top: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      line-height: 1.45;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--text-secondary);
+    }
+
+    @keyframes msgIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .messenger-input {
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+    }
+
+    .messenger-input-field {
+      flex: 1;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 7px 14px;
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      min-height: 34px;
+    }
+
+    .messenger-input-field.typing {
+      color: var(--text-primary);
+    }
+
+    .messenger-send {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: default;
+    }
+
+    /* --- Terminals (right) --- */
+    .terminals-stack {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .mini-term {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .mini-term + .mini-term {
+      border-top: 1px solid var(--border);
+    }
+
+    .mini-term-glow {
+      box-shadow: inset 0 0 0 1px var(--accent), 0 0 16px rgba(56, 189, 248, 0.2);
+      transition: box-shadow 0.3s ease-in;
+    }
+
+    .mini-term:not(.mini-term-glow) {
+      transition: box-shadow 1.8s ease-out;
+    }
+
+    .mini-term-glow .mini-term-bar {
+      background: rgba(56, 189, 248, 0.08);
+      transition: background 0.3s ease-in;
+    }
+
+    .mini-term:not(.mini-term-glow) .mini-term-bar {
+      transition: background 1.8s ease-out;
+    }
+
+    .mini-term-bar {
+      background: var(--bg-card);
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .mini-term-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .mini-term-dot.red { background: #ff5f56; }
+    .mini-term-dot.yellow { background: #ffbd2e; }
+    .mini-term-dot.green { background: #27c93f; }
+
+    .mini-term-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+      flex: 1;
+    }
+
+    .mini-term-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+
+    .badge-claude {
+      color: #c4a7ff;
+      border-color: rgba(196, 167, 255, 0.3);
+      background: rgba(196, 167, 255, 0.08);
+    }
+
+    .badge-codex {
+      color: #4ade80;
+      border-color: rgba(74, 222, 128, 0.3);
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    .badge-shell {
+      color: var(--yellow);
+      border-color: rgba(251, 191, 36, 0.3);
+      background: rgba(251, 191, 36, 0.08);
+    }
+
+    .mini-term-body {
+      flex: 1;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      overflow-y: auto;
+      white-space: pre;
+      background: var(--bg-code);
+      min-height: 0;
+    }
+
+    .mini-term-body .term-line {
+      opacity: 0;
+      animation: termLineIn 0.2s forwards;
+    }
+
+    .term-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 13px;
+      background: var(--text-secondary);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+
+    .term-highlight {
+      color: var(--green);
+    }
+
+    .term-accent {
+      color: var(--accent);
+    }
+
+    .term-warn {
+      color: var(--yellow);
+    }
+
+    .term-purple {
+      color: #c4a7ff;
+    }
+
+    .term-dim {
+      color: var(--text-muted);
+    }
+
+    @keyframes termLineIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* --- Mobile: stack vertically --- */
+    @media (max-width: 768px) {
+      .demo-split {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: none;
+      }
+
+      .messenger {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        height: 350px;
+      }
+
+      .terminals-stack {
+        height: 400px;
+      }
+    }
+
+    /* ========== Admin UI Showcase ========== */
+    #admin-ui {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ui-showcase {
+      max-width: 900px;
       margin: 0 auto;
     }
 
-    .demo-titlebar {
+    .ui-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 2;
+      overflow-x: auto;
+      padding-bottom: 1px;
+    }
+
+    .ui-tab {
       background: var(--bg-card);
-      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      border-radius: 8px 8px 0 0;
+      padding: 8px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .ui-tab:hover {
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+
+    .ui-tab.active {
+      background: var(--bg-code);
+      color: var(--accent);
+      border-bottom-color: var(--bg-code);
+    }
+
+    .ui-window {
+      border: 1px solid var(--border);
+      border-radius: 0 8px 8px 8px;
+      background: var(--bg-code);
+      overflow: hidden;
+    }
+
+    .ui-titlebar {
+      background: var(--bg-card);
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
       border-bottom: 1px solid var(--border);
     }
 
-    .demo-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-
-    .demo-dot.red { background: #ff5f56; }
-    .demo-dot.yellow { background: #ffbd2e; }
-    .demo-dot.green { background: #27c93f; }
-
-    .demo-titlebar span {
+    .ui-url {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
+      background: var(--bg-primary);
+      padding: 3px 12px;
+      border-radius: 4px;
       margin-left: 8px;
+      border: 1px solid var(--border);
     }
 
-    .demo-content {
+    .ui-panel {
+      display: none;
       padding: 20px;
+      min-height: 340px;
+      animation: uiFadeIn 0.3s ease;
+    }
+
+    .ui-panel.active {
+      display: block;
+    }
+
+    @keyframes uiFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Terminals Tab --- */
+    .ui-term-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .ui-term-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .ui-term-card:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .ui-term-active {
+      border-color: var(--accent-dim);
+      box-shadow: 0 0 0 1px var(--accent-dim);
+    }
+
+    .ui-term-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ui-term-status {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .ui-term-status.on {
+      background: var(--green);
+      box-shadow: 0 0 4px var(--green);
+    }
+
+    .ui-term-label {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      line-height: 1.7;
-      min-height: 320px;
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      flex: 1;
     }
 
-    .demo-content .line {
-      opacity: 0;
-      animation: fadeInLine 0.3s forwards;
+    .ui-term-preview {
+      padding: 8px 10px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      min-height: 105px;
     }
 
-    .demo-content .user-msg {
+    .ui-term-input-row {
+      display: flex;
+      border-top: 1px solid var(--border);
+    }
+
+    .ui-term-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: none;
+      padding: 6px 8px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .ui-term-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .ui-term-send-btn {
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+    }
+
+    .ui-term-new {
+      border-style: dashed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 170px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+
+    .ui-term-new:hover {
+      opacity: 0.8;
+    }
+
+    .ui-term-plus {
+      font-size: 1.8rem;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    .ui-term-plus-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* --- Shared UI Components --- */
+    .ui-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .ui-toolbar-title {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .ui-btn-sm {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 5px 12px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .ui-btn-sm.ui-btn-accent {
+      background: var(--accent-dim);
+      border-color: var(--accent);
       color: var(--accent);
     }
 
-    .demo-content .bot-msg {
+    .ui-btn-sm.ui-btn-green {
+      background: var(--green-dim);
+      border-color: var(--green);
       color: var(--green);
     }
 
-    .demo-content .system-msg {
+    .ui-btn-xs {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .ui-badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      padding: 2px 7px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .ui-badge-green  { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+    .ui-badge-blue   { background: rgba(56,189,248,0.1); color: var(--accent); border: 1px solid rgba(56,189,248,0.25); }
+    .ui-badge-gray   { background: rgba(100,116,139,0.1); color: var(--text-muted); border: 1px solid rgba(100,116,139,0.25); }
+
+    .ui-mono { font-family: var(--font-mono); font-size: 0.75rem; }
+    .ui-dim  { color: var(--text-muted); }
+
+    /* --- Table --- */
+    .ui-table {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .ui-table-head {
+      display: flex;
+      padding: 8px 14px;
+      background: var(--bg-card);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ui-table-row {
+      display: flex;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .ui-table-row:last-child {
+      border-bottom: none;
+    }
+
+    .ui-table-row:hover {
+      background: rgba(56,189,248,0.03);
+    }
+
+    .ui-table-row-draft {
+      opacity: 0.65;
+    }
+
+    .ui-col-grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ui-col-md   { width: 110px; flex-shrink: 0; text-align: center; }
+    .ui-col-sm   { width: 70px; flex-shrink: 0; text-align: center; }
+
+    /* --- Editor Tab --- */
+    .ui-editor-layout {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      min-height: 300px;
+    }
+
+    .ui-editor-sidebar {
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 10px 0;
+    }
+
+    .ui-editor-file {
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .ui-editor-file:hover {
+      background: rgba(56,189,248,0.05);
+    }
+
+    .ui-editor-file.active {
+      background: rgba(56,189,248,0.08);
+      color: var(--accent);
+      border-left: 2px solid var(--accent);
+    }
+
+    .ui-editor-file-section {
+      padding: 12px 14px 4px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ui-editor-memory {
+      padding: 4px 14px 4px 20px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .ui-editor-main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ui-editor-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ui-editor-filename {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .ui-editor-code {
+      flex: 1;
+      padding: 10px 0;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.7;
+    }
+
+    .ui-code-line {
+      padding: 0 14px 0 0;
+      display: flex;
+    }
+
+    .ui-code-line:hover {
+      background: rgba(56,189,248,0.03);
+    }
+
+    .ui-ln {
+      display: inline-block;
+      width: 36px;
+      text-align: right;
+      padding-right: 12px;
+      color: var(--text-muted);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .ui-code-heading { color: var(--accent); font-weight: 600; }
+    .ui-code-list    { color: var(--text-secondary); }
+    .ui-code-key     { color: var(--yellow); }
+    .ui-code-cursor  { min-height: 1.2em; }
+
+    /* --- Hooks Tab --- */
+    .ui-hooks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .ui-hook-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .ui-hook-card-add {
+      border-style: dashed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      opacity: 0.5;
+      cursor: pointer;
+    }
+
+    .ui-hook-card-add:hover { opacity: 0.8; }
+
+    .ui-hook-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .ui-hook-icon {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .ui-hook-repo {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-primary);
+    }
+
+    .ui-hook-branch {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
       color: var(--text-muted);
     }
 
-    .demo-content .cmd {
-      color: var(--yellow);
+    .ui-hook-cmd {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      font-size: 0.7rem;
+      overflow-x: auto;
     }
 
-    @keyframes fadeInLine {
-      to { opacity: 1; }
+    .ui-hook-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .ui-hook-last { margin-left: auto; }
+
+    /* --- Connectors Tab --- */
+    .ui-connectors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .ui-connector-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .ui-connector-soon {
+      opacity: 0.45;
+    }
+
+    .ui-connector-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ui-connector-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ui-connector-tg { background: linear-gradient(135deg, #2AABEE, #229ED9); color: #fff; }
+    .ui-connector-sl { background: linear-gradient(135deg, #611f69, #4A154B); color: #fff; font-weight: 700; }
+    .ui-connector-dc { background: linear-gradient(135deg, #5865F2, #4752C4); }
+
+    .ui-connector-name {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .ui-connector-detail {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .ui-connector-stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ui-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ui-stat-val {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .ui-stat-lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .ui-connector-flags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ui-flag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text-muted);
+    }
+
+    /* --- Mobile --- */
+    @media (max-width: 768px) {
+      .ui-tabs { gap: 2px; }
+      .ui-tab { padding: 6px 10px; font-size: 0.7rem; }
+      .ui-term-grid { grid-template-columns: 1fr; }
+      .ui-editor-layout { grid-template-columns: 1fr; }
+      .ui-editor-sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+      .ui-hooks-grid { grid-template-columns: 1fr; }
+      .ui-connectors-grid { grid-template-columns: 1fr; }
+      .ui-table-head, .ui-table-row { font-size: 0.7rem; }
+      .ui-col-md { width: 80px; }
     }
 
     .section-title {
@@ -633,7 +1499,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <span class="hero-badge">v0.3 -- open source</span>
+      <span class="hero-badge">v0.4 -- open source</span>
       <h1>
         <span class="accent">AI-powered</span> terminal manager.<br>
         Controlled from Telegram.
@@ -655,18 +1521,356 @@
   <section class="demo" id="demo">
     <div class="container">
       <h2 class="section-title">See it in action</h2>
-      <p class="section-subtitle">AI manager mode -- talk naturally, it handles the rest</p>
-      <div class="demo-window">
-        <div class="demo-titlebar">
-          <div class="demo-dot red"></div>
-          <div class="demo-dot yellow"></div>
-          <div class="demo-dot green"></div>
-          <span>Telegram -- OneCmd Bot</span>
+      <p class="section-subtitle">One chat. Three terminals. Full control.</p>
+      <div class="demo-split">
+
+        <!-- Left: Messenger -->
+        <div class="messenger">
+          <div class="messenger-header">
+            <div class="messenger-avatar">1C</div>
+            <div class="messenger-info">
+              <div class="messenger-name">onecmd-bot</div>
+              <div class="messenger-status">online</div>
+            </div>
+          </div>
+          <div class="messenger-body" id="demo-chat">
+            <!-- Messages injected by JS -->
+          </div>
+          <div class="messenger-input">
+            <div class="messenger-input-field" id="demo-input"></div>
+            <div class="messenger-send">&#x27A4;</div>
+          </div>
         </div>
-        <div class="demo-content" id="demo-terminal">
-          <!-- Lines injected by JS -->
+
+        <!-- Right: 3 Terminals -->
+        <div class="terminals-stack">
+          <div class="mini-term">
+            <div class="mini-term-bar">
+              <div class="mini-term-dot red"></div>
+              <div class="mini-term-dot yellow"></div>
+              <div class="mini-term-dot green"></div>
+              <span class="mini-term-title">.1 &mdash; claude-code</span>
+              <span class="mini-term-badge badge-claude">claude</span>
+            </div>
+            <div class="mini-term-body" id="term-claude"></div>
+          </div>
+
+          <div class="mini-term">
+            <div class="mini-term-bar">
+              <div class="mini-term-dot red"></div>
+              <div class="mini-term-dot yellow"></div>
+              <div class="mini-term-dot green"></div>
+              <span class="mini-term-title">.2 &mdash; codex</span>
+              <span class="mini-term-badge badge-codex">codex</span>
+            </div>
+            <div class="mini-term-body" id="term-codex"></div>
+          </div>
+
+          <div class="mini-term">
+            <div class="mini-term-bar">
+              <div class="mini-term-dot red"></div>
+              <div class="mini-term-dot yellow"></div>
+              <div class="mini-term-dot green"></div>
+              <span class="mini-term-title">.3 &mdash; shell</span>
+              <span class="mini-term-badge badge-shell">zsh</span>
+            </div>
+            <div class="mini-term-body" id="term-shell"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Admin UI Showcase -->
+  <section id="admin-ui">
+    <div class="container">
+      <h2 class="section-title">Built-in admin panel</h2>
+      <p class="section-subtitle">A web dashboard for everything. No Telegram required.</p>
+
+      <div class="ui-showcase">
+        <div class="ui-tabs">
+          <button class="ui-tab active" data-tab="ui-terminals">Terminals</button>
+          <button class="ui-tab" data-tab="ui-cron">Cron Jobs</button>
+          <button class="ui-tab" data-tab="ui-editor">SOP Editor</button>
+          <button class="ui-tab" data-tab="ui-webhooks">Deploy Hooks</button>
+          <button class="ui-tab" data-tab="ui-connectors">Connectors</button>
+        </div>
+
+        <div class="ui-window">
+          <div class="ui-titlebar">
+            <div class="demo-dot red"></div>
+            <div class="demo-dot yellow"></div>
+            <div class="demo-dot green"></div>
+            <span class="ui-url">localhost:8080</span>
+          </div>
+
+          <!-- Tab: Terminals -->
+          <div class="ui-panel active" id="ui-terminals">
+            <div class="ui-term-grid">
+              <div class="ui-term-card ui-term-active">
+                <div class="ui-term-card-header">
+                  <span class="ui-term-status on"></span>
+                  <span class="ui-term-label">.1 claude-code</span>
+                  <span class="mini-term-badge badge-claude">active</span>
+                </div>
+                <div class="ui-term-preview">
+                  <div class="term-dim">claude ~/project</div>
+                  <div><span class="term-highlight">Edit</span> auth.py:42</div>
+                  <div class="term-dim">- if token == stored:</div>
+                  <div class="term-highlight">+ if hmac.compare_digest(</div>
+                  <div class="term-highlight">    token, stored):</div>
+                  <div>&nbsp;</div>
+                  <div><span class="term-highlight">&check;</span> <span class="term-dim">Fixed.</span></div>
+                </div>
+                <div class="ui-term-input-row">
+                  <input type="text" class="ui-term-input" value="fix the signup validation next" disabled>
+                  <span class="ui-term-send-btn">&crarr;</span>
+                </div>
+              </div>
+
+              <div class="ui-term-card">
+                <div class="ui-term-card-header">
+                  <span class="ui-term-status on"></span>
+                  <span class="ui-term-label">.2 codex</span>
+                  <span class="mini-term-badge badge-codex">running</span>
+                </div>
+                <div class="ui-term-preview">
+                  <div>$ codex <span class="term-warn">--model o4-mini</span></div>
+                  <div>&nbsp;</div>
+                  <div><span class="term-highlight">PASS</span> auth.test.ts</div>
+                  <div><span class="term-highlight">PASS</span> db.test.ts</div>
+                  <div><span class="term-warn">RUN </span> api.test.ts&hellip;</div>
+                  <div>&nbsp;</div>
+                  <div class="term-dim">3/5 tests</div>
+                </div>
+                <div class="ui-term-input-row">
+                  <input type="text" class="ui-term-input" placeholder="send keystrokes..." disabled>
+                  <span class="ui-term-send-btn">&crarr;</span>
+                </div>
+              </div>
+
+              <div class="ui-term-card">
+                <div class="ui-term-card-header">
+                  <span class="ui-term-status on"></span>
+                  <span class="ui-term-label">.3 shell</span>
+                  <span class="mini-term-badge badge-shell">idle</span>
+                </div>
+                <div class="ui-term-preview">
+                  <div><span class="term-accent">erik@server</span>:<span class="term-warn">~</span>$</div>
+                  <div>$ htop</div>
+                  <div>&nbsp;</div>
+                  <div>PID  CPU%  MEM%  CMD</div>
+                  <div><span class="term-warn">34.2</span>  12.1  node server</div>
+                  <div> 8.1   3.4  nginx</div>
+                  <div> 4.7   8.9  python onecmd</div>
+                </div>
+                <div class="ui-term-input-row">
+                  <input type="text" class="ui-term-input" placeholder="send keystrokes..." disabled>
+                  <span class="ui-term-send-btn">&crarr;</span>
+                </div>
+              </div>
+
+              <div class="ui-term-card ui-term-new">
+                <div class="ui-term-plus">+</div>
+                <div class="ui-term-plus-label">New Terminal</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Cron Jobs -->
+          <div class="ui-panel" id="ui-cron">
+            <div class="ui-toolbar">
+              <span class="ui-toolbar-title">Scheduled Jobs</span>
+              <button class="ui-btn-sm ui-btn-accent">+ Add Job</button>
+            </div>
+            <div class="ui-table">
+              <div class="ui-table-head">
+                <span class="ui-col-grow">Description</span>
+                <span class="ui-col-md">Schedule</span>
+                <span class="ui-col-sm">Status</span>
+                <span class="ui-col-md">Last Run</span>
+              </div>
+              <div class="ui-table-row">
+                <span class="ui-col-grow">Check if deploy pipeline is stuck</span>
+                <span class="ui-col-md ui-mono">*/5 * * * *</span>
+                <span class="ui-col-sm"><span class="ui-badge ui-badge-green">active</span></span>
+                <span class="ui-col-md ui-dim">2 min ago</span>
+              </div>
+              <div class="ui-table-row">
+                <span class="ui-col-grow">Backup database to S3</span>
+                <span class="ui-col-md ui-mono">0 3 * * *</span>
+                <span class="ui-col-sm"><span class="ui-badge ui-badge-green">active</span></span>
+                <span class="ui-col-md ui-dim">8 hours ago</span>
+              </div>
+              <div class="ui-table-row">
+                <span class="ui-col-grow">Clear Docker build cache weekly</span>
+                <span class="ui-col-md ui-mono">0 0 * * 0</span>
+                <span class="ui-col-sm"><span class="ui-badge ui-badge-blue">paused</span></span>
+                <span class="ui-col-md ui-dim">3 days ago</span>
+              </div>
+              <div class="ui-table-row">
+                <span class="ui-col-grow">Health-check all services</span>
+                <span class="ui-col-md ui-mono">*/15 * * * *</span>
+                <span class="ui-col-sm"><span class="ui-badge ui-badge-green">active</span></span>
+                <span class="ui-col-md ui-dim">12 min ago</span>
+              </div>
+              <div class="ui-table-row ui-table-row-draft">
+                <span class="ui-col-grow ui-dim">Rotate logs when > 500MB</span>
+                <span class="ui-col-md ui-mono ui-dim">&mdash;</span>
+                <span class="ui-col-sm"><span class="ui-badge ui-badge-gray">draft</span></span>
+                <span class="ui-col-md"><button class="ui-btn-xs ui-btn-accent">Compile</button></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: SOP Editor -->
+          <div class="ui-panel" id="ui-editor">
+            <div class="ui-editor-layout">
+              <div class="ui-editor-sidebar">
+                <div class="ui-editor-file active">agent_sop.md</div>
+                <div class="ui-editor-file">custom_rules.md</div>
+                <div class="ui-editor-file-section">Memory (7)</div>
+                <div class="ui-editor-memory">"always run tests before deploy"</div>
+                <div class="ui-editor-memory">"prefer yarn over npm"</div>
+                <div class="ui-editor-memory">"erik's server is Ubuntu 24.04"</div>
+                <div class="ui-editor-memory ui-dim">&hellip; 4 more</div>
+              </div>
+              <div class="ui-editor-main">
+                <div class="ui-editor-toolbar">
+                  <span class="ui-editor-filename">custom_rules.md</span>
+                  <button class="ui-btn-sm ui-btn-green">Save & Reload</button>
+                </div>
+                <div class="ui-editor-code" id="ui-editor-content">
+                  <div class="ui-code-line"><span class="ui-ln">1</span><span class="ui-code-heading"># Custom Rules</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">2</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">3</span><span class="ui-code-list">- Always run tests before deploying</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">4</span><span class="ui-code-list">- Never restart postgres without asking</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">5</span><span class="ui-code-list">- Prefer yarn over npm</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">6</span><span class="ui-code-list">- Use docker compose v2 syntax</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">7</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">8</span><span class="ui-code-heading"># Auto-restart whitelist</span></div>
+                  <div class="ui-code-line"><span class="ui-ln">9</span><span class="ui-code-key">auto-restart:</span> nginx, redis</div>
+                  <div class="ui-code-line ui-code-cursor"><span class="ui-ln">10</span><span class="term-cursor"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Deploy Hooks -->
+          <div class="ui-panel" id="ui-webhooks">
+            <div class="ui-toolbar">
+              <span class="ui-toolbar-title">Deploy Webhooks</span>
+              <button class="ui-btn-sm ui-btn-accent">+ Add Hook</button>
+            </div>
+            <div class="ui-hooks-grid">
+              <div class="ui-hook-card">
+                <div class="ui-hook-header">
+                  <span class="ui-hook-icon">&lbrace; &rbrace;</span>
+                  <div>
+                    <div class="ui-hook-repo">warlockee/myapp</div>
+                    <div class="ui-hook-branch">main</div>
+                  </div>
+                  <span class="ui-badge ui-badge-green">armed</span>
+                </div>
+                <div class="ui-hook-cmd">
+                  <span class="ui-mono">cd /app && git pull && docker compose up -d --build</span>
+                </div>
+                <div class="ui-hook-meta">
+                  <span>Terminal: <b>deploy</b></span>
+                  <span>Secret: <span class="ui-dim">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span></span>
+                  <span class="ui-hook-last">Last: <span class="term-highlight">2m ago &check;</span></span>
+                </div>
+              </div>
+
+              <div class="ui-hook-card">
+                <div class="ui-hook-header">
+                  <span class="ui-hook-icon">&lbrace; &rbrace;</span>
+                  <div>
+                    <div class="ui-hook-repo">warlockee/1cmd-ai</div>
+                    <div class="ui-hook-branch">main</div>
+                  </div>
+                  <span class="ui-badge ui-badge-green">armed</span>
+                </div>
+                <div class="ui-hook-cmd">
+                  <span class="ui-mono">cd /opt/onecmd && git pull && systemctl restart onecmd</span>
+                </div>
+                <div class="ui-hook-meta">
+                  <span>Terminal: <b>shell</b></span>
+                  <span>Secret: <span class="ui-dim">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span></span>
+                  <span class="ui-hook-last">Last: <span class="term-highlight">1h ago &check;</span></span>
+                </div>
+              </div>
+
+              <div class="ui-hook-card ui-hook-card-add">
+                <div class="ui-term-plus">+</div>
+                <div class="ui-term-plus-label">Add webhook</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Connectors -->
+          <div class="ui-panel" id="ui-connectors">
+            <div class="ui-toolbar">
+              <span class="ui-toolbar-title">Connectors</span>
+            </div>
+            <div class="ui-connectors-grid">
+              <div class="ui-connector-card">
+                <div class="ui-connector-header">
+                  <div class="ui-connector-icon ui-connector-tg">&#x2708;</div>
+                  <div>
+                    <div class="ui-connector-name">Telegram</div>
+                    <div class="ui-connector-detail">@my_server_bot</div>
+                  </div>
+                  <span class="ui-badge ui-badge-green">connected</span>
+                </div>
+                <div class="ui-connector-stats">
+                  <div class="ui-stat"><span class="ui-stat-val">4h 23m</span><span class="ui-stat-lbl">uptime</span></div>
+                  <div class="ui-stat"><span class="ui-stat-val">142</span><span class="ui-stat-lbl">messages</span></div>
+                  <div class="ui-stat"><span class="ui-stat-val">1</span><span class="ui-stat-lbl">owner</span></div>
+                </div>
+                <div class="ui-connector-flags">
+                  <span class="ui-flag">OTP: on</span>
+                  <span class="ui-flag">Timeout: 1800s</span>
+                </div>
+              </div>
+
+              <div class="ui-connector-card">
+                <div class="ui-connector-header">
+                  <div class="ui-connector-icon ui-connector-sl">#</div>
+                  <div>
+                    <div class="ui-connector-name">Slack</div>
+                    <div class="ui-connector-detail">onecmd-bot &middot; Socket Mode</div>
+                  </div>
+                  <span class="ui-badge ui-badge-green">connected</span>
+                </div>
+                <div class="ui-connector-stats">
+                  <div class="ui-stat"><span class="ui-stat-val">4h 23m</span><span class="ui-stat-lbl">uptime</span></div>
+                  <div class="ui-stat"><span class="ui-stat-val">37</span><span class="ui-stat-lbl">messages</span></div>
+                  <div class="ui-stat"><span class="ui-stat-val">1</span><span class="ui-stat-lbl">owner</span></div>
+                </div>
+                <div class="ui-connector-flags">
+                  <span class="ui-flag">Rate limit: 1/s</span>
+                  <span class="ui-flag">Events: message.im</span>
+                </div>
+              </div>
+
+              <div class="ui-connector-card ui-connector-soon">
+                <div class="ui-connector-header">
+                  <div class="ui-connector-icon ui-connector-dc">&#x1F3AE;</div>
+                  <div>
+                    <div class="ui-connector-name">Discord</div>
+                    <div class="ui-connector-detail ui-dim">Coming soon</div>
+                  </div>
+                  <span class="ui-badge ui-badge-gray">planned</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
+
     </div>
   </section>
 
@@ -895,56 +2099,474 @@
       });
     }
 
-    // ========== Demo animation ==========
-    var demoLines = [
-      { type: 'system', text: 'Manager mode activated. How can I help?' },
-      { type: 'user', text: 'You: check disk space on all terminals' },
-      { type: 'system', text: '...' },
-      { type: 'bot', text: 'AI: Running df -h on 3 terminals...' },
-      { type: 'bot', text: '' },
-      { type: 'bot', text: 'AI: Results:' },
-      { type: 'cmd', text: '  server-1  /dev/sda1  45% used  (230GB free)' },
-      { type: 'cmd', text: '  server-2  /dev/sda1  91% used  (18GB free)  &#x26A0;' },
-      { type: 'cmd', text: '  pi-node   /dev/mmcblk0  62% used  (11GB free)' },
-      { type: 'bot', text: '' },
-      { type: 'bot', text: 'AI: server-2 is at 91% disk usage. Want me to investigate what\'s using space?' },
-      { type: 'user', text: 'You: yes, clean up docker images if safe' },
-      { type: 'system', text: '...' },
-      { type: 'bot', text: 'AI: Found 12.4GB of unused Docker images on server-2.' },
-      { type: 'bot', text: 'AI: Running docker image prune -f...' },
-      { type: 'bot', text: 'AI: Done. Freed 12.4GB. Disk now at 67%.' },
-    ];
+    // ========== Demo: split messenger + 3 terminals ==========
+    var chatEl  = document.getElementById('demo-chat');
+    var inputEl = document.getElementById('demo-input');
+    var termC   = document.getElementById('term-claude');
+    var termX   = document.getElementById('term-codex');
+    var termS   = document.getElementById('term-shell');
 
-    var demoEl = document.getElementById('demo-terminal');
-    var demoStarted = false;
-
-    function runDemo() {
-      if (demoStarted) return;
-      demoStarted = true;
-      demoEl.innerHTML = '';
-      var delay = 0;
-
-      demoLines.forEach(function(line, i) {
-        delay += (line.text === '...') ? 800 : 300;
+    function addMsg(type, html, delay) {
+      return new Promise(function(resolve) {
         setTimeout(function() {
           var div = document.createElement('div');
-          div.className = 'line ' + line.type + '-msg';
-          if (line.text === '') {
-            div.innerHTML = '&nbsp;';
-          } else {
-            div.textContent = line.text;
-          }
-          div.style.animationDelay = '0s';
-          demoEl.appendChild(div);
-          demoEl.scrollTop = demoEl.scrollHeight;
-        }, delay);
+          div.className = 'msg msg-' + type;
+          div.innerHTML = html;
+          chatEl.appendChild(div);
+          chatEl.scrollTop = chatEl.scrollHeight;
+          resolve(div);
+        }, delay || 0);
       });
+    }
 
-      // Loop the demo
-      setTimeout(function() {
-        demoStarted = false;
-        runDemo();
-      }, delay + 4000);
+    // Show bot "typing..." and optionally light up terminals being worked on.
+    // Pass terminal body elements to glow, e.g. showTyping([termC, termS])
+    function showTyping(glowTerms) {
+      var div = document.createElement('div');
+      div.className = 'msg msg-typing';
+      div.innerHTML = '<span class="msg-label">onecmd-bot</span>typing\u2026';
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      // Light up terminal edges
+      var cards = [];
+      if (glowTerms) {
+        glowTerms.forEach(function(el) {
+          var card = el.closest('.mini-term');
+          if (card) { card.classList.add('mini-term-glow'); cards.push(card); }
+        });
+      }
+
+      return function() {
+        if (div.parentNode) div.remove();
+        cards.forEach(function(c) { c.classList.remove('mini-term-glow'); });
+      };
+    }
+
+    function typeInput(text, ms) {
+      return new Promise(function(resolve) {
+        inputEl.textContent = '';
+        inputEl.classList.add('typing');
+        var i = 0;
+        var iv = setInterval(function() {
+          inputEl.textContent = text.slice(0, ++i);
+          if (i >= text.length) {
+            clearInterval(iv);
+            setTimeout(function() {
+              inputEl.textContent = '';
+              inputEl.classList.remove('typing');
+              resolve();
+            }, 300);
+          }
+        }, ms || 70);
+      });
+    }
+
+    function termLine(el, html) {
+      var div = document.createElement('div');
+      div.className = 'term-line';
+      div.innerHTML = html;
+      el.appendChild(div);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function termSet(el, lines) {
+      el.innerHTML = '';
+      lines.forEach(function(l) { termLine(el, l); });
+    }
+
+    function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+    // Bot label shorthand
+    var B = '<span class="msg-label">onecmd-bot</span>';
+
+    // ---- DEMO SEQUENCE ----
+    var demoRunning = false;
+
+    async function runDemo() {
+      if (demoRunning) return;
+      demoRunning = true;
+
+      // Reset everything
+      chatEl.innerHTML = '';
+      inputEl.textContent = '';
+      termSet(termC, [
+        '<span class="term-purple">claude</span> <span class="term-dim">~/project</span>',
+        '',
+        '<span class="term-dim">  Waiting for input\u2026</span>',
+        '',
+        '<span class="term-accent">></span> <span class="term-cursor"></span>',
+      ]);
+      termSet(termX, [
+        '<span class="term-highlight">$</span> codex <span class="term-warn">--model o4-mini</span>',
+        '<span class="term-dim">Running tests\u2026</span>',
+        '',
+        '  <span class="term-highlight">PASS</span> tests/auth.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/db.test.ts',
+        '  <span class="term-warn">RUN </span> tests/api.test.ts\u2026',
+      ]);
+      termSet(termS, [
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '<span class="term-cursor"></span>',
+      ]);
+
+      await wait(800);
+
+      // =========================================================
+      // ACT 1  \u2014  Activate & scan
+      // =========================================================
+      await typeInput('.mgr', 160);
+      await addMsg('user', '.mgr');
+      await wait(300);
+      await addMsg('bot', B + 'Manager mode on. Dot commands still work.');
+      await wait(700);
+
+      await typeInput("what's happening across all terminals?", 80);
+      await addMsg('user', "what\u2019s happening across all terminals?");
+      var rm = showTyping([termC, termX, termS]); await wait(1800); rm();
+      await addMsg('bot',
+        B + 'Scanned 3 terminals:\n\n' +
+        '<b>.1 claude</b> \u2014 idle, waiting for input\n' +
+        '<b>.2 codex</b> \u2014 running tests (2/5 passed)\n' +
+        '<b>.3 shell</b> \u2014 idle at prompt'
+      );
+
+      await wait(1200);
+
+      // =========================================================
+      // ACT 2  \u2014  Orchestrate all 3 (the money shot)
+      // =========================================================
+      await typeInput('tell claude to fix the login bug. when codex tests finish, deploy from shell.', 65);
+      await addMsg('user', 'tell claude to fix the login bug. when codex tests finish, deploy from shell.');
+      rm = showTyping([termC, termX, termS]); await wait(1400); rm();
+      await addMsg('bot', B + 'On it. Sending task to Claude, watching Codex, deploy queued.');
+
+      await wait(400);
+
+      // Claude starts
+      termSet(termC, [
+        '<span class="term-purple">claude</span> <span class="term-dim">~/project</span>',
+        '',
+        '<span class="term-accent">></span> fix the login bug in auth.py',
+        '',
+        '<span class="term-dim">  Reading auth.py\u2026</span>',
+      ]);
+      await wait(600);
+      termSet(termC, [
+        '<span class="term-purple">claude</span> <span class="term-dim">~/project</span>',
+        '',
+        '<span class="term-accent">></span> fix the login bug in auth.py',
+        '',
+        '<span class="term-dim">  Reading auth.py\u2026</span>',
+        '  <span class="term-highlight">Edit</span> auth.py:42',
+        '  <span class="term-dim">- if token == stored_token:</span>',
+        '  <span class="term-highlight">+ if hmac.compare_digest(token, stored_token):</span>',
+      ]);
+      await wait(700);
+
+      // Codex progresses
+      termSet(termX, [
+        '<span class="term-highlight">$</span> codex <span class="term-warn">--model o4-mini</span>',
+        '',
+        '  <span class="term-highlight">PASS</span> tests/auth.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/db.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/api.test.ts',
+        '  <span class="term-warn">RUN </span> tests/deploy.test.ts\u2026',
+      ]);
+      await wait(500);
+
+      // Claude done
+      termSet(termC, [
+        '<span class="term-purple">claude</span> <span class="term-dim">~/project</span>',
+        '',
+        '  <span class="term-highlight">Edit</span> auth.py:42',
+        '  <span class="term-dim">- if token == stored_token:</span>',
+        '  <span class="term-highlight">+ if hmac.compare_digest(token, stored_token):</span>',
+        '',
+        '  <span class="term-highlight">\u2713 Fixed.</span> <span class="term-dim">Timing-safe comparison.</span>',
+        '',
+        '<span class="term-accent">></span> <span class="term-cursor"></span>',
+      ]);
+      await wait(300);
+      await addMsg('bot', B + 'Claude fixed auth.py:42 \u2014 timing-safe comparison.');
+      await wait(800);
+
+      // Codex all pass
+      termSet(termX, [
+        '<span class="term-highlight">$</span> codex <span class="term-warn">--model o4-mini</span>',
+        '',
+        '  <span class="term-highlight">PASS</span> tests/auth.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/db.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/api.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/deploy.test.ts',
+        '  <span class="term-highlight">PASS</span> tests/e2e.test.ts',
+        '',
+        '<span class="term-highlight">All 5 tests passed.</span>',
+      ]);
+      await wait(400);
+      await addMsg('bot', B + 'Codex: all 5 tests passed. Deploying\u2026');
+
+      // Shell deploys
+      await wait(300);
+      termSet(termS, [
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '<span class="term-highlight">$</span> git pull && docker compose up -d --build',
+        '<span class="term-dim">Pulling latest\u2026</span>',
+        '<span class="term-dim">Building containers\u2026</span>',
+      ]);
+      await wait(900);
+      termSet(termS, [
+        '<span class="term-highlight">$</span> git pull && docker compose up -d --build',
+        '<span class="term-dim">Pulling latest\u2026 done</span>',
+        '<span class="term-dim">Building containers\u2026 done</span>',
+        '<span class="term-highlight">\u2713 Deployed.</span> <span class="term-dim">3 containers running.</span>',
+        '',
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$ <span class="term-cursor"></span>',
+      ]);
+      await wait(400);
+      await addMsg('bot', B + '\u2705 Deploy complete. 3 containers up.');
+
+      await wait(2000);
+
+      // =========================================================
+      // ACT 3  \u2014  Proactive alert (bot messages YOU unprompted)
+      // =========================================================
+
+      // Shell suddenly shows high disk
+      termSet(termS, [
+        '<span class="term-highlight">$</span> git pull && docker compose up -d --build',
+        '<span class="term-highlight">\u2713 Deployed.</span> <span class="term-dim">3 containers running.</span>',
+        '',
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$ df -h /',
+        'Filesystem  Size  Used  Avail Use%  Mounted on',
+        '/dev/sda1   100G  <span class="term-warn">93G</span>   7.0G  <span class="term-warn">93%</span>  /',
+      ]);
+
+      await wait(600);
+
+      // Bot alerts without being asked
+      await addMsg('bot',
+        B + '\u26a0\ufe0f <b>Disk alert</b>: /dev/sda1 is at <b>93%</b> (7GB free).\n' +
+        'I found 14.2GB of unused Docker images.\n' +
+        'Clean them up?'
+      );
+
+      await wait(1200);
+      await typeInput('yes', 200);
+      await addMsg('user', 'yes');
+      rm = showTyping([termS]); await wait(1200); rm();
+
+      termSet(termS, [
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '<span class="term-highlight">$</span> docker image prune -af',
+        '<span class="term-dim">Deleted: sha256:a1b2c3\u2026  2.1GB</span>',
+        '<span class="term-dim">Deleted: sha256:d4e5f6\u2026  4.8GB</span>',
+        '<span class="term-dim">Deleted: sha256:789abc\u2026  7.3GB</span>',
+        '',
+        '<span class="term-highlight">Total reclaimed: 14.2GB</span>',
+      ]);
+
+      await wait(500);
+      await addMsg('bot', B + 'Done. Freed 14.2GB. Disk now at <b>79%</b>.');
+
+      await wait(2000);
+
+      // =========================================================
+      // ACT 4  \u2014  Crash detection + auto-restart
+      // =========================================================
+
+      // Nginx crashes in the shell
+      termSet(termS, [
+        '<span class="term-highlight">Total reclaimed: 14.2GB</span>',
+        '',
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '',
+        '<span style="color:#f87171">nginx[2847]: signal 11 (SIGSEGV) received</span>',
+        '<span style="color:#f87171">nginx[2847]: worker process 2849 exited</span>',
+        '<span style="color:#f87171">systemd: nginx.service: Failed.</span>',
+      ]);
+
+      await wait(500);
+
+      // Bot detects it immediately
+      await addMsg('bot',
+        B + '\u2757 <b>Crash detected</b> in shell:\n' +
+        'nginx worker got SIGSEGV \u2014 service failed.\n\n' +
+        'Restart nginx?'
+      );
+
+      await wait(1000);
+      await typeInput('restart it', 130);
+      await addMsg('user', 'restart it');
+      rm = showTyping([termS]); await wait(1000); rm();
+
+      termSet(termS, [
+        '<span style="color:#f87171">systemd: nginx.service: Failed.</span>',
+        '',
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '<span class="term-highlight">$</span> sudo systemctl restart nginx',
+        '<span class="term-dim">Restarting nginx\u2026</span>',
+      ]);
+      await wait(700);
+      termSet(termS, [
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '<span class="term-highlight">$</span> sudo systemctl restart nginx',
+        '<span class="term-highlight">\u2713 nginx.service: active (running)</span>',
+        '',
+        '<span class="term-highlight">$</span> curl -sI localhost | head -1',
+        '<span class="term-highlight">HTTP/1.1 200 OK</span>',
+        '',
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$ <span class="term-cursor"></span>',
+      ]);
+      await wait(400);
+      await addMsg('bot', B + '\u2705 nginx restarted and responding (200 OK).');
+
+      await wait(2000);
+
+      // =========================================================
+      // ACT 5  \u2014  Background watch ("set it and forget it")
+      // =========================================================
+      await typeInput('watch codex. tell me when the refactor is done. im going to lunch', 65);
+      await addMsg('user', 'watch codex. tell me when the refactor is done. im going to lunch');
+      rm = showTyping([termX]); await wait(1100); rm();
+      await addMsg('bot', B + 'Got it. I\u2019ll watch terminal .2 and message you when Codex finishes. Enjoy lunch.');
+
+      // Codex starts a long task
+      termSet(termX, [
+        '<span class="term-highlight">$</span> codex <span class="term-warn">--model o4-mini</span>',
+        '',
+        '<span class="term-accent">></span> refactor api/ to use async handlers',
+        '',
+        '<span class="term-dim">  Analyzing 23 files\u2026</span>',
+        '  <span class="term-warn">[ 4/23 ]</span> api/routes.py',
+      ]);
+
+      await wait(1500);
+
+      // Time passes\u2026
+      termSet(termX, [
+        '<span class="term-accent">></span> refactor api/ to use async handlers',
+        '',
+        '  <span class="term-warn">[12/23]</span> api/middleware.py',
+        '  <span class="term-warn">[13/23]</span> api/auth.py',
+        '  <span class="term-dim">  Converting sync \u2192 async\u2026</span>',
+      ]);
+
+      await wait(1500);
+
+      // Codex finishes
+      termSet(termX, [
+        '<span class="term-accent">></span> refactor api/ to use async handlers',
+        '',
+        '  <span class="term-highlight">\u2713</span> 23/23 files refactored',
+        '  <span class="term-highlight">\u2713</span> All tests pass',
+        '',
+        '<span class="term-highlight">Refactor complete.</span> <span class="term-dim">+142 -89 lines</span>',
+        '',
+        '<span class="term-highlight">$</span> <span class="term-cursor"></span>',
+      ]);
+
+      await wait(600);
+
+      // Bot notifies you back
+      await addMsg('bot',
+        B + '\uD83C\uDF55 Hey \u2014 Codex finished the refactor.\n\n' +
+        '23 files converted to async.\n' +
+        'All tests pass. +142 -89 lines.\n\n' +
+        'Ready to review when you\u2019re back.'
+      );
+
+      await wait(2500);
+
+      // =========================================================
+      // ACT 6  \u2014  Memory + custom rules
+      // =========================================================
+      await typeInput('remember: always run tests before deploying to prod', 75);
+      await addMsg('user', 'remember: always run tests before deploying to prod');
+      rm = showTyping(); await wait(500); rm();  // no terminal — memory is internal
+      await addMsg('bot', B + '\u2705 Saved to memory. I\u2019ll enforce this on future deploys.');
+
+      await wait(1500);
+
+      // =========================================================
+      // ACT 7  \u2014  Quick manual mode demo (emoji keystrokes)
+      // =========================================================
+      await typeInput('.3', 200);
+      await addMsg('user', '.3');
+      await wait(300);
+      await addMsg('bot',
+        B + '<b>.3 shell</b>\n' +
+        '<pre>' +
+        'erik@server:~/project$\n' +
+        '$ sudo systemctl restart nginx\n' +
+        '\u2713 nginx.service: active (running)\n' +
+        '\n' +
+        '$ curl -sI localhost | head -1\n' +
+        'HTTP/1.1 200 OK\n' +
+        '\n' +
+        'erik@server:~/project$ \u2588' +
+        '</pre>'
+      );
+      await wait(800);
+
+      // User sends Ctrl+C via emoji
+      await typeInput('\u2764\ufe0fc', 180);
+      await addMsg('user', '\u2764\ufe0fc');
+      termSet(termS, [
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$',
+        '^C',
+        '<span class="term-accent">erik@server</span>:<span class="term-warn">~/project</span>$ <span class="term-cursor"></span>',
+      ]);
+      await wait(400);
+
+      await typeInput('htop', 160);
+      await addMsg('user', 'htop');
+      await wait(300);
+      termSet(termS, [
+        '<span class="term-accent">  htop \u2014 erik@server</span>',
+        '',
+        '  PID  USER   CPU%  MEM%  COMMAND',
+        '  <span class="term-highlight">2103</span>  erik   <span class="term-warn">34.2</span>  12.1  node server.js',
+        '  <span class="term-highlight">2847</span>  root    8.1   3.4  nginx: master',
+        '  <span class="term-highlight">3201</span>  erik    4.7   8.9  python onecmd',
+        '  <span class="term-highlight">3344</span>  erik    2.1   1.2  docker compose',
+        '  <span class="term-dim">\u2026</span>',
+        '',
+        '  <span class="term-dim">Tasks: 47, Load: 0.82 0.71 0.63</span>',
+      ]);
+
+      await wait(2500);
+
+      // =========================================================
+      // ACT 8  \u2014  Multi-platform tease
+      // =========================================================
+
+      // Back to manager mode
+      await typeInput('.mgr', 160);
+      await addMsg('user', '.mgr');
+      await wait(200);
+      await addMsg('bot', B + 'Manager mode on.');
+      await wait(600);
+
+      await typeInput('.health', 160);
+      await addMsg('user', '.health');
+      await wait(300);
+      await addMsg('bot',
+        B + '<b>Health Report</b>\n' +
+        'Uptime: 4h 23m\n' +
+        'Terminals: 3\n' +
+        'Manager: on\n' +
+        'Connectors: <b>telegram</b>, <b>slack</b>\n' +
+        'LLM: gemini-2.5-pro (fallback: claude)\n' +
+        'Memory: 7 items\n' +
+        'Background tasks: 1 active'
+      );
+
+      // Hold final state
+      await wait(6000);
+
+      demoRunning = false;
+      runDemo();
     }
 
     // Start demo when visible
@@ -952,9 +2574,61 @@
       if (entries[0].isIntersecting) {
         runDemo();
       }
-    }, { threshold: 0.3 });
+    }, { threshold: 0.2 });
 
-    demoObserver.observe(document.querySelector('.demo-window'));
+    demoObserver.observe(document.querySelector('.demo-split'));
+
+    // ========== Admin UI Tabs ==========
+    (function() {
+      var tabs = document.querySelectorAll('.ui-tab');
+      var panels = document.querySelectorAll('.ui-panel');
+      var cycleTimer = null;
+      var TAB_IDS = ['ui-terminals','ui-cron','ui-editor','ui-webhooks','ui-connectors'];
+      var currentIdx = 0;
+      var userInteracted = false;
+
+      function activateTab(id) {
+        tabs.forEach(function(t) { t.classList.toggle('active', t.getAttribute('data-tab') === id); });
+        panels.forEach(function(p) { p.classList.toggle('active', p.id === id); });
+        currentIdx = TAB_IDS.indexOf(id);
+      }
+
+      // Click handler
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          activateTab(this.getAttribute('data-tab'));
+          userInteracted = true;
+          clearInterval(cycleTimer);
+          // Resume auto-cycle after 10s of no clicks
+          setTimeout(function() {
+            userInteracted = false;
+            startCycle();
+          }, 10000);
+        });
+      });
+
+      // Auto-cycle
+      function startCycle() {
+        clearInterval(cycleTimer);
+        cycleTimer = setInterval(function() {
+          if (userInteracted) return;
+          currentIdx = (currentIdx + 1) % TAB_IDS.length;
+          activateTab(TAB_IDS[currentIdx]);
+        }, 4000);
+      }
+
+      // Start cycling when section is visible
+      var uiObserver = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          startCycle();
+        } else {
+          clearInterval(cycleTimer);
+        }
+      }, { threshold: 0.2 });
+
+      var uiSection = document.getElementById('admin-ui');
+      if (uiSection) uiObserver.observe(uiSection);
+    })();
   </script>
 
 </body>
