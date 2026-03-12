@@ -1,0 +1,3 @@
+[submodule "1cmd-ai"]
+	path = 1cmd-ai
+	url = https://github.com/warlockee/1cmd-ai.git

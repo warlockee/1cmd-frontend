@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTRDQZ12EM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTRDQZ12EM');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OneCmd -- AI-Powered Terminal Manager</title>
@@ -1539,7 +1547,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <span class="hero-badge">v0.4 -- open source</span>
+      <span class="hero-badge" id="version-badge">v0.4 -- open source</span>
       <h1>
         You have 10 AI agents running.<br>
         <span class="accent">Who's managing them?</span>
@@ -1550,8 +1558,8 @@
       </p>
       <div class="hero-install">
         <div class="code-block" style="display: inline-block; min-width: 500px;">
-          <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
-          <span class="prompt">$</span> curl -fsSL https://1cmd.ai/setup.sh | bash
+          <button class="copy-btn" data-copy="curl -sL https://1cmd.ai/setup.sh | bash">copy</button>
+          <span class="prompt">$</span> curl -sL https://1cmd.ai/setup.sh | bash
         </div>
       </div>
     </div>
@@ -2027,8 +2035,8 @@
               <h4>Install &amp; configure</h4>
               <p>One command. Handles Python, dependencies, and walks you through setup.</p>
               <div class="code-block">
-                <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
-                <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash
+                <button class="copy-btn" data-copy="curl -sL https://1cmd.ai/setup.sh | bash">copy</button>
+                <span class="prompt">$</span> curl -sL https://1cmd.ai/setup.sh | bash
               </div>
             </div>
           </div>
@@ -2057,8 +2065,8 @@
             <div class="step-content">
               <h4>Install OneCmd</h4>
               <div class="code-block">
-                <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash">copy</button>
-                <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/warlockee/1cmd-ai/main/setup.sh | bash
+                <button class="copy-btn" data-copy="curl -sL https://1cmd.ai/setup.sh | bash">copy</button>
+                <span class="prompt">$</span> curl -sL https://1cmd.ai/setup.sh | bash
               </div>
             </div>
           </div>
@@ -2735,6 +2743,22 @@
 
       var uiSection = document.getElementById('admin-ui');
       if (uiSection) uiObserver.observe(uiSection);
+    })();
+  </script>
+
+  <!-- Sync version badge with repo -->
+  <script>
+    (function() {
+      fetch('https://raw.githubusercontent.com/warlockee/1cmd-ai/main/pyproject.toml')
+        .then(function(r) { return r.text(); })
+        .then(function(t) {
+          var m = t.match(/^version\s*=\s*"([^"]+)"/m);
+          if (m) {
+            var badge = document.getElementById('version-badge');
+            if (badge) badge.textContent = 'v' + m[1] + ' -- open source';
+          }
+        })
+        .catch(function() {});
     })();
   </script>
 
